@@ -1,9 +1,74 @@
-import example.pepita
+import personajes.*
+import ejercito.*
 
-describe "group of tests for pepita" {
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+describe "tests" {
+
+  const unHumanoGuerrero = new Humano(rol = guerrero, fuerza = 10)
+
+  const unOrcoGuerrero = new Orco(rol = guerrero, fuerza = 10)
+
+  const unHumanoCazador = new Humano(
+    rol = new Cazador(mascota = new Mascota(fuerza = 1, edad = 5)), 
+    fuerza = 20)
+
+  const otroPersonajeCazador = new Humano(
+    rol = new Cazador(mascota = new Mascota(fuerza = 50, tieneGarras = false, edad = 5)), 
+    fuerza = 20)
+
+  test "potencial ofensivo de un personaje que es guerrero" {
+    assert.equals(200, unHumanoGuerrero.potencialOfensivo())
   }
 
+  test "potencial ofensivo de un orco que es guerrero" {
+    assert.equals(220, unOrcoGuerrero.potencialOfensivo())
+  }
+
+  test "potencial ofensivo de un personaje que es cazador con una mascota debil" {
+    assert.equals(202, unHumanoCazador.potencialOfensivo())
+  }
+
+  test "potencial ofensivo de un personaje que es cazador con una mascota fuerte" {
+    assert.equals(250, otroPersonajeCazador.potencialOfensivo())
+  }
+
+  test "ejercito de orcos ataca una aldea y pierde" {
+    const alianza = new Ejercito(integrantes = [unHumanoGuerrero,unHumanoCazador])
+    const unaAldea = new Aldea(ocupante=alianza)
+    const horda = new Ejercito(integrantes = [unOrcoGuerrero])
+
+    horda.invadir(unaAldea)
+
+    assert.equals(alianza, unaAldea.ocupante())
+  }
+
+  test "ejercito de orcos mas grande ataca una aldea y gana" {
+    const alianza = new Ejercito(integrantes = [unHumanoGuerrero,unHumanoCazador])
+    const unaAldea = new Aldea(ocupante=alianza)
+    const horda = new Ejercito(integrantes = [unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero])
+
+    horda.invadir(unaAldea)
+
+    assert.equals(horda, unaAldea.ocupante()) //??? 3 > 3 ?
+  }
+
+  test "ejercito de orcos mas grande ataca una ciudad y pierde" {
+    const alianza = new Ejercito(integrantes = [unHumanoGuerrero,unHumanoCazador])
+    const unaCiudad = new Ciudad(ocupante=alianza)
+    const horda = new Ejercito(integrantes = [unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero])
+
+    horda.invadir(unaCiudad)
+
+    assert.equals(alianza, unaCiudad.ocupante())
+  }
+
+  test "ejercito de orcos mas grande ataca una aldea, gana y el ejercito se divide" {
+    const alianza = new Ejercito(integrantes = [unHumanoGuerrero,unHumanoCazador])
+    const unaAldea = new Aldea(ocupante=alianza)
+    const horda = new Ejercito(integrantes = [unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero,unOrcoGuerrero])
+ 
+    horda.invadir(unaAldea)
+
+    assert.equals(10, unaAldea.ocupante().cantidadIntegrantes())
+  }
 }
